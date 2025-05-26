@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Activate Plan | Carry Me Along</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary-color: #6a0dad;
+        --secondary-color: #ffd700;
+        --accent-color: #9c27b0;
+        --light-color: #f3e5f5;
+        --dark-color: #4a148c;
+        --text-color: #333;
+        --white: #ffffff;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: #f5f5f5;
+        color: var(--text-color);
+        overflow-x: hidden;
+        min-height: 100vh;
+      }
+
+      .dashboard-container {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* Drawer Styles */
+      .drawer {
+        width: 280px;
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--dark-color)
+        );
+        color: var(--white);
+        padding: 2rem 0;
+        position: fixed;
+        height: 100vh;
+        box-shadow: var(--shadow);
+        transform: translateX(-100%);
+        transition: var(--transition);
+        z-index: 1000;
+      }
+
+      .drawer.open {
+        transform: translateX(0);
+      }
+
+      .drawer-header {
+        padding: 0 1.5rem 1.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 1rem;
+      }
+
+      .drawer-logo {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+      }
+
+      .drawer-logo span {
+        color: var(--secondary-color);
+      }
+
+      .drawer-user {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+      }
+
+      .drawer-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: var(--secondary-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: var(--dark-color);
+      }
+
+      .drawer-username {
+        font-weight: 600;
+      }
+
+      .drawer-plan {
+        font-size: 0.8rem;
+        opacity: 0.8;
+        margin-top: 0.2rem;
+      }
+
+      .drawer-menu {
+        list-style: none;
+        padding: 0 1rem;
+      }
+
+      .drawer-menu li {
+        margin-bottom: 0.5rem;
+      }
+
+      .drawer-menu a {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.8rem 1rem;
+        color: var(--white);
+        text-decoration: none;
+        border-radius: 8px;
+        transition: var(--transition);
+      }
+
+      .drawer-menu a:hover,
+      .drawer-menu a.active {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: var(--secondary-color);
+      }
+
+      .drawer-menu i {
+        font-size: 1.2rem;
+        width: 24px;
+        text-align: center;
+      }
+
+      /* Main Content Styles */
+      .main-content {
+        flex: 1;
+        margin-left: 0;
+        transition: var(--transition);
+        min-height: 100vh;
+      }
+
+      .main-content.shifted {
+        margin-left: 280px;
+      }
+
+      .top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+        background-color: var(--white);
+        box-shadow: var(--shadow);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .menu-toggle {
+        font-size: 1.5rem;
+        color: var(--primary-color);
+        cursor: pointer;
+        transition: var(--transition);
+      }
+
+      .menu-toggle:hover {
+        color: var(--accent-color);
+      }
+
+      .user-actions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .notification-btn,
+      .logout-btn {
+        font-size: 1.2rem;
+        color: var(--primary-color);
+        cursor: pointer;
+        transition: var(--transition);
+        position: relative;
+      }
+
+      .notification-btn:hover,
+      .logout-btn:hover {
+        color: var(--accent-color);
+      }
+
+      .notification-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background-color: #e53935;
+        color: white;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        font-size: 0.7rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .content-area {
+        padding: 2rem;
+      }
+
+      /* Activation Section */
+      .activation-container {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: var(--white);
+        border-radius: 15px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        animation: fadeIn 0.8s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .activation-header {
+        background: linear-gradient(
+          to right,
+          var(--primary-color),
+          var(--accent-color)
+        );
+        color: var(--white);
+        padding: 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .activation-header::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 215, 0, 0.1) 0%,
+          transparent 70%
+        );
+        transform: rotate(30deg);
+        animation: shine 8s infinite linear;
+      }
+
+      @keyframes shine {
+        0% {
+          transform: rotate(30deg) translate(-10%, -10%);
+        }
+        100% {
+          transform: rotate(30deg) translate(10%, 10%);
+        }
+      }
+
+      .activation-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        position: relative;
+      }
+
+      .activation-subtitle {
+        font-size: 1rem;
+        opacity: 0.9;
+        position: relative;
+      }
+
+      .activation-body {
+        padding: 2rem;
+      }
+
+      .steps-container {
+        counter-reset: step-counter;
+        margin-bottom: 2rem;
+      }
+
+      .step {
+        position: relative;
+        padding-left: 60px;
+        margin-bottom: 2rem;
+        animation: slideIn 0.5s ease forwards;
+        opacity: 0;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .step:nth-child(1) {
+        animation-delay: 0.2s;
+      }
+      .step:nth-child(2) {
+        animation-delay: 0.4s;
+      }
+      .step:nth-child(3) {
+        animation-delay: 0.6s;
+      }
+      .step:nth-child(4) {
+        animation-delay: 0.8s;
+      }
+
+      .step::before {
+        counter-increment: step-counter;
+        content: counter(step-counter);
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(
+          to right,
+          var(--primary-color),
+          var(--accent-color)
+        );
+        color: var(--white);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.2rem;
+      }
+
+      .step-title {
+        font-size: 1.3rem;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+      }
+
+      .step-content {
+        line-height: 1.6;
+        color: #555;
+      }
+
+      .payment-details {
+        background-color: var(--light-color);
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        border-left: 4px solid var(--secondary-color);
+      }
+
+      .payment-details h3 {
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .payment-details h3 i {
+        color: var(--accent-color);
+      }
+
+      .detail-item {
+        display: flex;
+        margin-bottom: 0.8rem;
+      }
+
+      .detail-label {
+        font-weight: 600;
+        color: var(--dark-color);
+        min-width: 150px;
+      }
+
+      .detail-value {
+        color: var(--text-color);
+      }
+
+      .highlight {
+        color: var(--accent-color);
+        font-weight: 600;
+      }
+
+      .btn {
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1rem;
+      }
+
+      .btn-primary {
+        background: linear-gradient(
+          to right,
+          var(--primary-color),
+          var(--accent-color)
+        );
+        color: var(--white);
+        box-shadow: 0 4px 15px rgba(106, 13, 173, 0.3);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(106, 13, 173, 0.4);
+      }
+
+      .btn-primary:active {
+        transform: translateY(0);
+      }
+
+      .btn-block {
+        display: block;
+        width: 100%;
+        text-align: center;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+      }
+
+      .notice {
+        background-color: var(--light-color);
+        padding: 1rem;
+        border-radius: 10px;
+        margin: 1.5rem 0;
+        text-align: center;
+        font-weight: 500;
+        color: var(--dark-color);
+        border-left: 4px solid var(--secondary-color);
+      }
+
+      .notice span {
+        color: var(--accent-color);
+        font-weight: 700;
+      }
+
+      /* Toast Styles */
+      .toast {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #e53935;
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 5px;
+        box-shadow: var(--shadow);
+        z-index: 1000;
+        transform: translateX(200%);
+        transition: transform 0.3s ease;
+      }
+
+      .toast.show {
+        transform: translateX(0);
+      }
+
+      .toast.success {
+        background-color: #4caf50;
+      }
+
+      /* Responsive Styles */
+      @media (max-width: 992px) {
+        .drawer {
+          width: 250px;
+        }
+        .main-content.shifted {
+          margin-left: 250px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .activation-body {
+          padding: 1.5rem;
+        }
+        .action-buttons {
+          flex-direction: column;
+        }
+        .detail-item {
+          flex-direction: column;
+          gap: 0.3rem;
+        }
+        .detail-label {
+          min-width: auto;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .content-area {
+          padding: 1.5rem 1rem;
+        }
+        .activation-header {
+          padding: 1.5rem;
+        }
+        .activation-title {
+          font-size: 1.8rem;
+        }
+        .step {
+          padding-left: 50px;
+        }
+        .step::before {
+          width: 35px;
+          height: 35px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <!-- Drawer Navigation -->
+      <aside class="drawer" id="drawer">
+        <div class="drawer-header">
+          <div class="drawer-logo">Carry Me <span>Along</span></div>
+          <div class="drawer-user">
+            <div class="drawer-avatar" id="user-avatar">U</div>
+            <div>
+              <div class="drawer-username" id="username">Username</div>
+              <div class="drawer-plan" id="user-plan">Plan: Not Activated</div>
+            </div>
+          </div>
+        </div>
+        <ul class="drawer-menu">
+          <li>
+            <a href="dashboard.html">
+              <i class="fas fa-home"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="active">
+              <i class="fas fa-bolt"></i>
+              <span>Activate</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" id="bind-account-btn">
+              <i class="fas fa-university"></i>
+              <span>Bind Bank Account</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" id="withdraw-btn">
+              <i class="fas fa-money-bill-wave"></i>
+              <span>Withdraw</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" id="ads-tasks-btn">
+              <i class="fas fa-ad"></i>
+              <span>Ads Tasks</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <i class="fas fa-history"></i>
+              <span>Transaction History</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <i class="fas fa-cog"></i>
+              <span>Settings</span>
+            </a>
+          </li>
+        </ul>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content" id="main-content">
+        <div class="top-bar">
+          <div class="menu-toggle" id="menu-toggle">
+            <i class="fas fa-bars"></i>
+          </div>
+          <div class="user-actions">
+            <a href="info.html">
+              <div class="notification-btn">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge">3</span>
+              </div>
+            </a>
+            <div class="logout-btn">
+              <i class="fas fa-sign-out-alt"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-area">
+          <div class="activation-container">
+            <div class="activation-header">
+              <h1 class="activation-title">Activate Your Plan</h1>
+              <p class="activation-subtitle">
+                Complete your activation to start earning
+              </p>
+            </div>
+
+            <div class="activation-body">
+              <div class="steps-container">
+                <div class="step">
+                  <h3 class="step-title">Select Your Plan</h3>
+                  <div class="step-content">
+                    <p>
+                      You have selected the
+                      <span class="highlight" id="selected-plan">Premium</span>
+                      plan. Please complete the activation process to unlock all
+                      features.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="step">
+                  <h3 class="step-title">Make Payment</h3>
+                  <div class="step-content">
+                    <p>
+                      Make a transfer of
+                      <span class="highlight" id="activation-fee"
+                        >NGN 5,500</span
+                      >
+                      to the account details below to activate your account.
+                    </p>
+
+                    <div class="payment-details">
+                      <h3>
+                        <i class="fas fa-university"></i> Payment Information
+                      </h3>
+                      <div class="detail-item">
+                        <div class="detail-label">Account Number:</div>
+                        <div class="detail-value">6680087150</div>
+                      </div>
+                      <div class="detail-item">
+                        <div class="detail-label">Bank Name:</div>
+                        <div class="detail-value">Palmpay</div>
+                      </div>
+                      <div class="detail-item">
+                        <div class="detail-label">Account Name:</div>
+                        <div class="detail-value">Grace God'sGrace</div>
+                      </div>
+                      <div class="detail-item">
+                        <div class="detail-label">Amount:</div>
+                        <div class="detail-value highlight" id="payment-amount">
+                          NGN 5,500
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="step">
+                  <h3 class="step-title">Confirm Payment</h3>
+                  <div class="step-content">
+                    <p>
+                      After making the payment, upload your proof of payment
+                      below. Our system will verify your payment automatically.
+                    </p>
+
+                    <div class="input-group" style="margin-top: 1rem">
+                      <label for="proof-upload">Upload Proof of Payment</label>
+                      <input
+                        type="file"
+                        id="proof-upload"
+                        accept="image/*,.pdf"
+                        style="padding: 0.5rem"
+                      />
+                      <small
+                        style="color: #777; display: block; margin-top: 0.5rem"
+                      >
+                        Accepts images or PDF (max 5MB)
+                      </small>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="step">
+                  <h3 class="step-title">Activation Complete</h3>
+                  <div class="step-content">
+                    <p>
+                      Once your payment is verified (usually within 5-10
+                      minutes), your account will be activated automatically.
+                      You'll receive a confirmation notification.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="notice">
+                <p>
+                  Having issues with activation? Contact support via WhatsApp
+                  for immediate assistance.
+                </p>
+              </div>
+
+              <div class="action-buttons">
+                <button class="btn btn-primary" id="confirm-payment-btn">
+                  <i class="fas fa-check-circle"></i> I've Made Payment
+                </button>
+                <button class="btn btn-primary" id="contact-support-btn">
+                  <i class="fab fa-whatsapp"></i> Contact Support
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Get user data from localStorage
+        const userData =
+          JSON.parse(localStorage.getItem("carryMeAlongUser")) || {};
+        const bankData =
+          JSON.parse(localStorage.getItem("carryMeAlongBank")) || {};
+
+        // DOM Elements
+        const drawer = document.getElementById("drawer");
+        const menuToggle = document.getElementById("menu-toggle");
+        const mainContent = document.getElementById("main-content");
+
+        // User Info Elements
+        const userAvatar = document.getElementById("user-avatar");
+        const usernameElement = document.getElementById("username");
+        const userPlanElement = document.getElementById("user-plan");
+        const selectedPlanElement = document.getElementById("selected-plan");
+        const activationFeeElement = document.getElementById("activation-fee");
+        const paymentAmountElement = document.getElementById("payment-amount");
+
+        // Buttons
+        const confirmPaymentBtn = document.getElementById(
+          "confirm-payment-btn"
+        );
+        const contactSupportBtn = document.getElementById(
+          "contact-support-btn"
+        );
+
+        // Toast
+        const toast = document.getElementById("toast");
+
+        // Initialize user data
+        function initUserData() {
+          if (userData.username) {
+            // Set user info
+            usernameElement.textContent = userData.username;
+            userAvatar.textContent = userData.username.charAt(0).toUpperCase();
+
+            // Set plan info
+            const plan = userData.plan || "Not Activated";
+            userPlanElement.textContent = `Plan: ${plan}`;
+
+            // Update activation details based on plan
+            if (plan === "premium") {
+              selectedPlanElement.textContent = "Premium Plan";
+              activationFeeElement.textContent = "NGN 5,500";
+              paymentAmountElement.textContent = "NGN 5,500";
+            } else if (plan === "vip") {
+              selectedPlanElement.textContent = "VIP Plan";
+              activationFeeElement.textContent = "NGN 11,000";
+              paymentAmountElement.textContent = "NGN 11,000";
+            }
+          }
+        }
+
+        // Toggle drawer
+        menuToggle.addEventListener("click", function () {
+          drawer.classList.toggle("open");
+          mainContent.classList.toggle("shifted");
+        });
+
+        // Confirm payment button - will always show as failed
+        confirmPaymentBtn.addEventListener("click", function () {
+          const fileInput = document.getElementById("proof-upload");
+          if (!fileInput.files || fileInput.files.length === 0) {
+            showToast("Please upload your proof of payment", "error");
+            return;
+          }
+
+          // Always show payment verification as failed
+          showToast("Payment verification failed. Please try again.", "error");
+
+          // Reset the file input
+          fileInput.value = "";
+
+          // In a real scenario, you might want to add more details about the failure
+          setTimeout(() => {
+            showToast(
+              "Contact support if you believe this is an error",
+              "error"
+            );
+          }, 3000);
+        });
+
+        // Contact support button
+        contactSupportBtn.addEventListener("click", function () {
+          window.open("https://wa.me/2349159307408", "_blank");
+        });
+
+        // Show toast notification
+        function showToast(message, type = "error") {
+          toast.textContent = message;
+          toast.className = "toast";
+          toast.classList.add(type === "error" ? "show" : "show success");
+
+          setTimeout(() => {
+            toast.classList.remove("show");
+          }, 3000);
+        }
+
+        // Initialize the page
+        initUserData();
+      });
+    </script>
+  </body>
+</html>

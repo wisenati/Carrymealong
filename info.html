@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Reviews | Carry Me Along</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary-color: #6a0dad;
+        --secondary-color: #ffd700;
+        --accent-color: #9c27b0;
+        --light-color: #f3e5f5;
+        --dark-color: #4a148c;
+        --text-color: #333;
+        --white: #ffffff;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: #f5f5f5;
+        color: var(--text-color);
+        overflow-x: hidden;
+        min-height: 100vh;
+      }
+
+      .dashboard-container {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* Drawer Styles */
+      .drawer {
+        width: 280px;
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--dark-color)
+        );
+        color: var(--white);
+        padding: 2rem 0;
+        position: fixed;
+        height: 100vh;
+        box-shadow: var(--shadow);
+        transform: translateX(-100%);
+        transition: var(--transition);
+        z-index: 1000;
+      }
+
+      .drawer.open {
+        transform: translateX(0);
+      }
+
+      .drawer-header {
+        padding: 0 1.5rem 1.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 1rem;
+      }
+
+      .drawer-logo {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+      }
+
+      .drawer-logo span {
+        color: var(--secondary-color);
+      }
+
+      .drawer-user {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+      }
+
+      .drawer-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: var(--secondary-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: var(--dark-color);
+      }
+
+      .drawer-username {
+        font-weight: 600;
+      }
+
+      .drawer-plan {
+        font-size: 0.8rem;
+        opacity: 0.8;
+        margin-top: 0.2rem;
+      }
+
+      .drawer-menu {
+        list-style: none;
+        padding: 0 1rem;
+      }
+
+      .drawer-menu li {
+        margin-bottom: 0.5rem;
+      }
+
+      .drawer-menu a {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.8rem 1rem;
+        color: var(--white);
+        text-decoration: none;
+        border-radius: 8px;
+        transition: var(--transition);
+      }
+
+      .drawer-menu a:hover,
+      .drawer-menu a.active {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: var(--secondary-color);
+      }
+
+      .drawer-menu i {
+        font-size: 1.2rem;
+        width: 24px;
+        text-align: center;
+      }
+
+      /* Main Content Styles */
+      .main-content {
+        flex: 1;
+        margin-left: 0;
+        transition: var(--transition);
+        min-height: 100vh;
+      }
+
+      .main-content.shifted {
+        margin-left: 280px;
+      }
+
+      .top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+        background-color: var(--white);
+        box-shadow: var(--shadow);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .menu-toggle {
+        font-size: 1.5rem;
+        color: var(--primary-color);
+        cursor: pointer;
+        transition: var(--transition);
+      }
+
+      .menu-toggle:hover {
+        color: var(--accent-color);
+      }
+
+      .user-actions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .notification-btn,
+      .logout-btn {
+        font-size: 1.2rem;
+        color: var(--primary-color);
+        cursor: pointer;
+        transition: var(--transition);
+        position: relative;
+      }
+
+      .notification-btn:hover,
+      .logout-btn:hover {
+        color: var(--accent-color);
+      }
+
+      .notification-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background-color: #e53935;
+        color: white;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        font-size: 0.7rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .content-area {
+        padding: 2rem;
+      }
+
+      /* Reviews Page Styles */
+      .reviews-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        position: relative;
+      }
+
+      .reviews-title {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+      }
+
+      .reviews-subtitle {
+        font-size: 1.1rem;
+        color: #666;
+        max-width: 700px;
+        margin: 0 auto;
+      }
+
+      .rating-summary {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--accent-color)
+        );
+        color: white;
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 3rem;
+        box-shadow: var(--shadow);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .average-rating {
+        font-size: 4rem;
+        font-weight: 700;
+        line-height: 1;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+      }
+
+      .stars {
+        color: var(--secondary-color);
+        font-size: 2rem;
+        margin-left: 0.5rem;
+      }
+
+      .total-reviews {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin-bottom: 1.5rem;
+      }
+
+      .rating-distribution {
+        width: 100%;
+        max-width: 500px;
+      }
+
+      .rating-bar {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.8rem;
+      }
+
+      .rating-label {
+        width: 100px;
+        font-weight: 600;
+      }
+
+      .rating-progress {
+        flex: 1;
+        height: 10px;
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 5px;
+        overflow: hidden;
+        margin: 0 1rem;
+      }
+
+      .rating-fill {
+        height: 100%;
+        background-color: var(--secondary-color);
+        border-radius: 5px;
+      }
+
+      .rating-count {
+        width: 50px;
+        text-align: right;
+        font-weight: 600;
+      }
+
+      .reviews-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+      }
+
+      .review-card {
+        background-color: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+      }
+
+      .review-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+      }
+
+      .review-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+      }
+
+      .review-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: var(--light-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: var(--dark-color);
+        margin-right: 1rem;
+        font-size: 1.2rem;
+      }
+
+      .review-user {
+        flex: 1;
+      }
+
+      .review-name {
+        font-weight: 600;
+        margin-bottom: 0.2rem;
+      }
+
+      .review-date {
+        font-size: 0.8rem;
+        color: #777;
+      }
+
+      .review-rating {
+        color: var(--secondary-color);
+        font-size: 1.1rem;
+      }
+
+      .review-content {
+        line-height: 1.6;
+        color: #555;
+      }
+
+      .review-highlight {
+        color: var(--accent-color);
+        font-weight: 500;
+      }
+
+      .add-review {
+        background-color: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: var(--shadow);
+        margin-top: 3rem;
+      }
+
+      .add-review-title {
+        font-size: 1.5rem;
+        color: var(--primary-color);
+        margin-bottom: 1.5rem;
+        text-align: center;
+      }
+
+      .rating-input {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .star-input {
+        display: none;
+      }
+
+      .star-label {
+        font-size: 2rem;
+        color: #ddd;
+        cursor: pointer;
+        transition: var(--transition);
+        margin: 0 0.2rem;
+      }
+
+      .star-input:checked ~ .star-label,
+      .star-label:hover,
+      .star-label:hover ~ .star-label {
+        color: var(--secondary-color);
+      }
+
+      .review-form .input-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .review-form label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: var(--dark-color);
+      }
+
+      .review-form input,
+      .review-form textarea {
+        width: 100%;
+        padding: 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: var(--transition);
+      }
+
+      .review-form textarea {
+        min-height: 150px;
+        resize: vertical;
+      }
+
+      .review-form input:focus,
+      .review-form textarea:focus {
+        border-color: var(--accent-color);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(156, 39, 176, 0.2);
+      }
+
+      .btn {
+        padding: 0.8rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .btn-primary {
+        background-color: var(--primary-color);
+        color: var(--white);
+        box-shadow: 0 4px 15px rgba(106, 13, 173, 0.3);
+      }
+
+      .btn-primary:hover {
+        background-color: var(--accent-color);
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(156, 39, 176, 0.4);
+      }
+
+      .btn-block {
+        display: block;
+        width: 100%;
+        justify-content: center;
+      }
+
+      .error-message {
+        color: #e53935;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+        display: none;
+      }
+
+      .success-message {
+        background-color: #4caf50;
+        color: white;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-top: 1rem;
+        text-align: center;
+        display: none;
+      }
+
+      /* Toast Styles */
+      .toast {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #e53935;
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 5px;
+        box-shadow: var(--shadow);
+        z-index: 1000;
+        transform: translateX(200%);
+        transition: transform 0.3s ease;
+      }
+
+      .toast.show {
+        transform: translateX(0);
+      }
+
+      .toast.success {
+        background-color: #4caf50;
+      }
+
+      /* Responsive Styles */
+      @media (max-width: 992px) {
+        .drawer {
+          width: 250px;
+        }
+        .main-content.shifted {
+          margin-left: 250px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .reviews-container {
+          grid-template-columns: 1fr;
+        }
+
+        .rating-summary {
+          padding: 1.5rem;
+        }
+
+        .average-rating {
+          font-size: 3rem;
+        }
+
+        .stars {
+          font-size: 1.5rem;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .content-area {
+          padding: 1.5rem 1rem;
+        }
+
+        .reviews-title {
+          font-size: 2rem;
+        }
+
+        .rating-bar {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .rating-progress {
+          width: 100%;
+          margin: 0.5rem 0;
+        }
+
+        .add-review {
+          padding: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <!-- Drawer Navigation -->
+      <aside class="drawer" id="drawer">
+        <div class="drawer-header">
+          <div class="drawer-logo">Carry Me <span>Along</span></div>
+          <div class="drawer-user">
+            <div class="drawer-avatar" id="user-avatar">U</div>
+            <div>
+              <div class="drawer-username" id="username">Username</div>
+              <div class="drawer-plan" id="user-plan">Plan: Not Activated</div>
+            </div>
+          </div>
+        </div>
+        <ul class="drawer-menu">
+          <li>
+            <a href="dashboard.html">
+              <i class="fas fa-home"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="activate.html">
+              <i class="fas fa-bolt"></i>
+              <span>Activate</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" id="bind-account-btn">
+              <i class="fas fa-university"></i>
+              <span>Bind Bank Account</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" id="withdraw-btn">
+              <i class="fas fa-money-bill-wave"></i>
+              <span>Withdraw</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" id="ads-tasks-btn">
+              <i class="fas fa-ad"></i>
+              <span>Ads Tasks</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <i class="fas fa-history"></i>
+              <span>Transaction History</span>
+            </a>
+          </li>
+          <li>
+            <a href="info.html" class="active">
+              <i class="fas fa-star"></i>
+              <span>Reviews</span>
+            </a>
+          </li>
+        </ul>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content" id="main-content">
+        <div class="top-bar">
+          <div class="menu-toggle" id="menu-toggle">
+            <i class="fas fa-bars"></i>
+          </div>
+          <div class="user-actions">
+            <div class="notification-btn">
+              <i class="fas fa-bell"></i>
+              <span class="notification-badge">3</span>
+            </div>
+            <div class="logout-btn">
+              <i class="fas fa-sign-out-alt"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-area">
+          <div class="reviews-header">
+            <h1 class="reviews-title">User Experiences</h1>
+            <p class="reviews-subtitle">
+              See how Carry Me Along has transformed the financial lives of over
+              500 Nigerians. Share your own success story!
+            </p>
+          </div>
+
+          <div class="rating-summary">
+            <div class="average-rating">
+              4.8<span class="stars">★★★★★</span>
+            </div>
+            <div class="total-reviews">Based on 523 reviews from Nigeria</div>
+            <div class="rating-distribution">
+              <div class="rating-bar">
+                <div class="rating-label">5 stars</div>
+                <div class="rating-progress">
+                  <div class="rating-fill" style="width: 85%"></div>
+                </div>
+                <div class="rating-count">445</div>
+              </div>
+              <div class="rating-bar">
+                <div class="rating-label">4 stars</div>
+                <div class="rating-progress">
+                  <div class="rating-fill" style="width: 10%"></div>
+                </div>
+                <div class="rating-count">52</div>
+              </div>
+              <div class="rating-bar">
+                <div class="rating-label">3 stars</div>
+                <div class="rating-progress">
+                  <div class="rating-fill" style="width: 3%"></div>
+                </div>
+                <div class="rating-count">16</div>
+              </div>
+              <div class="rating-bar">
+                <div class="rating-label">2 stars</div>
+                <div class="rating-progress">
+                  <div class="rating-fill" style="width: 1%"></div>
+                </div>
+                <div class="rating-count">5</div>
+              </div>
+              <div class="rating-bar">
+                <div class="rating-label">1 star</div>
+                <div class="rating-progress">
+                  <div class="rating-fill" style="width: 1%"></div>
+                </div>
+                <div class="rating-count">5</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="reviews-container">
+            <div class="review-card">
+              <div class="review-header">
+                <div class="review-avatar">A</div>
+                <div class="review-user">
+                  <div class="review-name">Adebayo O.</div>
+                  <div class="review-date">Lagos • 2 days ago</div>
+                </div>
+                <div class="review-rating">★★★★★</div>
+              </div>
+              <div class="review-content">
+                <p>
+                  <span class="review-highlight">Life-changing platform!</span>
+                  I went from struggling to pay rent to owning my own apartment
+                  in just 6 months. The VIP plan is worth every kobo. The
+                  withdrawal process is seamless and customer support is
+                  excellent.
+                </p>
+              </div>
+            </div>
+
+            <div class="review-card">
+              <div class="review-header">
+                <div class="review-avatar">C</div>
+                <div class="review-user">
+                  <div class="review-name">Chioma K.</div>
+                  <div class="review-date">Abuja • 1 week ago</div>
+                </div>
+                <div class="review-rating">★★★★★</div>
+              </div>
+              <div class="review-content">
+                <p>
+                  <span class="review-highlight"
+                    >Best financial decision ever!</span
+                  >
+                  I was skeptical at first but decided to try with the minimum
+                  plan. Within 3 months, I've tripled my initial investment. Now
+                  I'm on the VIP plan earning over ₦100k weekly. Thank you Carry
+                  Me Along!
+                </p>
+              </div>
+            </div>
+
+            <div class="review-card">
+              <div class="review-header">
+                <div class="review-avatar">E</div>
+                <div class="review-user">
+                  <div class="review-name">Emeka U.</div>
+                  <div class="review-date">Port Harcourt • 10 Hours ago</div>
+                </div>
+                <div class="review-rating">★★★★★</div>
+              </div>
+              <div class="review-content">
+                <p>
+                  <span class="review-highlight">Legit and reliable!</span> I've
+                  been using this platform for 8 months now and I've never had
+                  any issues with withdrawals. The tasks are simple and the
+                  earnings are consistent. I've referred 5 friends and they're
+                  all happy too.
+                </p>
+              </div>
+            </div>
+
+            <div class="review-card">
+              <div class="review-header">
+                <div class="review-avatar">F</div>
+                <div class="review-user">
+                  <div class="review-name">Fatima B.</div>
+                  <div class="review-date">Kano • 15 hr ago</div>
+                </div>
+                <div class="review-rating">★★★★★</div>
+              </div>
+              <div class="review-content">
+                <p>
+                  <span class="review-highlight"
+                    >From unemployed to financially free!</span
+                  >
+                  After losing my job, I thought all hope was lost. Then I found
+                  Carry Me Along. Now I earn more than my previous salary just
+                  by completing simple tasks daily. God bless whoever created
+                  this platform.
+                </p>
+              </div>
+            </div>
+
+            <div class="review-card">
+              <div class="review-header">
+                <div class="review-avatar">O</div>
+                <div class="review-user">
+                  <div class="review-name">Oluwatobi S.</div>
+                  <div class="review-date">Ibadan • 20 hrs ago</div>
+                </div>
+                <div class="review-rating">★★★★★</div>
+              </div>
+              <div class="review-content">
+                <p>
+                  <span class="review-highlight">Simply amazing!</span> I used
+                  to think such opportunities were scams until my sister showed
+                  me her withdrawal alerts. I started small, now I'm making
+                  enough to support my family and save for the future. The
+                  premium plan is the real deal!
+                </p>
+              </div>
+            </div>
+
+            <div class="review-card">
+              <div class="review-header">
+                <div class="review-avatar">B</div>
+                <div class="review-user">
+                  <div class="review-name">Bisi A.</div>
+                  <div class="review-date">Benin • 1 day ago</div>
+                </div>
+                <div class="review-rating">★★★★☆</div>
+              </div>
+              <div class="review-content">
+                <p>
+                  <span class="review-highlight">Very good platform!</span> I've
+                  been earning consistently for 5 months now. The only reason
+                  I'm giving 4 stars is because sometimes the tasks finish
+                  quickly. But overall, this is one of the most legit platforms
+                  I've used.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="add-review">
+            <h2 class="add-review-title">Share Your Experience</h2>
+            <form class="review-form" id="review-form">
+              <div class="rating-input">
+                <input
+                  type="radio"
+                  id="star5"
+                  name="rating"
+                  value="5"
+                  class="star-input"
+                />
+                <label for="star5" class="star-label">★</label>
+                <input
+                  type="radio"
+                  id="star4"
+                  name="rating"
+                  value="4"
+                  class="star-input"
+                />
+                <label for="star4" class="star-label">★</label>
+                <input
+                  type="radio"
+                  id="star3"
+                  name="rating"
+                  value="3"
+                  class="star-input"
+                />
+                <label for="star3" class="star-label">★</label>
+                <input
+                  type="radio"
+                  id="star2"
+                  name="rating"
+                  value="2"
+                  class="star-input"
+                />
+                <label for="star2" class="star-label">★</label>
+                <input
+                  type="radio"
+                  id="star1"
+                  name="rating"
+                  value="1"
+                  class="star-input"
+                  checked
+                />
+                <label for="star1" class="star-label">★</label>
+              </div>
+              <div class="input-group">
+                <label for="review-title">Title</label>
+                <input
+                  type="text"
+                  id="review-title"
+                  placeholder="Summarize your experience"
+                />
+                <div class="error-message" id="title-error"></div>
+              </div>
+              <div class="input-group">
+                <label for="review-content">Your Review</label>
+                <textarea
+                  id="review-content"
+                  placeholder="Tell others about your experience with Carry Me Along. How has it helped you financially?"
+                ></textarea>
+                <div class="error-message" id="content-error"></div>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">
+                <i class="fas fa-paper-plane"></i> Submit Review
+              </button>
+              <div class="success-message" id="success-message"></div>
+            </form>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Get user data from localStorage
+        const userData =
+          JSON.parse(localStorage.getItem("carryMeAlongUser")) || {};
+        const reviews = JSON.parse(localStorage.getItem("userReviews")) || [];
+
+        // DOM Elements
+        const drawer = document.getElementById("drawer");
+        const menuToggle = document.getElementById("menu-toggle");
+        const mainContent = document.getElementById("main-content");
+        const reviewForm = document.getElementById("review-form");
+        const toast = document.getElementById("toast");
+
+        // User Info Elements
+        const userAvatar = document.getElementById("user-avatar");
+        const usernameElement = document.getElementById("username");
+        const userPlanElement = document.getElementById("user-plan");
+
+        // Initialize user data
+        function initUserData() {
+          if (userData.username) {
+            usernameElement.textContent = userData.username;
+            userAvatar.textContent = userData.username.charAt(0).toUpperCase();
+            userPlanElement.textContent = `Plan: ${
+              userData.plan || "Not Activated"
+            }`;
+          }
+        }
+
+        // Toggle drawer
+        menuToggle.addEventListener("click", function () {
+          drawer.classList.toggle("open");
+          mainContent.classList.toggle("shifted");
+        });
+
+        // Logout button
+        document
+          .querySelector(".logout-btn")
+          .addEventListener("click", function () {
+            window.location.href = "index.html";
+          });
+
+        // Review form submission
+        reviewForm.addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          // Reset error messages
+          document.querySelectorAll(".error-message").forEach((el) => {
+            el.style.display = "none";
+          });
+
+          // Get form values
+          const rating = document.querySelector(
+            'input[name="rating"]:checked'
+          ).value;
+          const title = document.getElementById("review-title").value.trim();
+          const content = document
+            .getElementById("review-content")
+            .value.trim();
+
+          // Validate inputs
+          let isValid = true;
+
+          if (!title) {
+            document.getElementById("title-error").textContent =
+              "Please add a title to your review";
+            document.getElementById("title-error").style.display = "block";
+            isValid = false;
+          }
+
+          if (!content) {
+            document.getElementById("content-error").textContent =
+              "Please write your review";
+            document.getElementById("content-error").style.display = "block";
+            isValid = false;
+          } else if (content.length < 20) {
+            document.getElementById("content-error").textContent =
+              "Review must be at least 20 characters";
+            document.getElementById("content-error").style.display = "block";
+            isValid = false;
+          }
+
+          if (isValid) {
+            // Create review object
+            const review = {
+              id: Date.now(),
+              username: userData.username || "Anonymous",
+              rating: parseInt(rating),
+              title,
+              content,
+              date: new Date().toLocaleDateString("en-NG", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              }),
+              location: "Nigeria",
+            };
+
+            // Save to localStorage
+            reviews.push(review);
+            localStorage.setItem("userReviews", JSON.stringify(reviews));
+
+            // Show success message
+            const successMessage = document.getElementById("success-message");
+            successMessage.textContent = "Thank you for your review!";
+            successMessage.style.display = "block";
+
+            // Reset form
+            reviewForm.reset();
+
+            // Hide success message after 3 seconds
+            setTimeout(() => {
+              successMessage.style.display = "none";
+            }, 3000);
+
+            // Show toast
+            showToast("Review submitted successfully!", "success");
+          }
+        });
+
+        // Show toast notification
+        function showToast(message, type = "error") {
+          toast.textContent = message;
+          toast.className = "toast";
+          toast.classList.add(type === "error" ? "show" : "show success");
+
+          setTimeout(() => {
+            toast.classList.remove("show");
+          }, 3000);
+        }
+
+        // Initialize the page
+        initUserData();
+      });
+    </script>
+  </body>
+</html>

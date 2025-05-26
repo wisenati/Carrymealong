@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard | Carry Me Along</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary-color: #6a0dad;
+        --secondary-color: #ffd700;
+        --accent-color: #9c27b0;
+        --light-color: #f3e5f5;
+        --dark-color: #4a148c;
+        --text-color: #333;
+        --white: #ffffff;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: #f5f5f5;
+        color: var(--text-color);
+        overflow-x: hidden;
+        min-height: 100vh;
+      }
+
+      .dashboard-container {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* Drawer Styles */
+      .drawer {
+        width: 280px;
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--dark-color)
+        );
+        color: var(--white);
+        padding: 2rem 0;
+        position: fixed;
+        height: 100vh;
+        box-shadow: var(--shadow);
+        transform: translateX(-100%);
+        transition: var(--transition);
+        z-index: 1000;
+      }
+
+      .drawer.open {
+        transform: translateX(0);
+      }
+
+      .drawer-header {
+        padding: 0 1.5rem 1.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 1rem;
+      }
+
+      .drawer-logo {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+      }
+
+      .drawer-logo span {
+        color: var(--secondary-color);
+      }
+
+      .drawer-user {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+      }
+
+      .drawer-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: var(--secondary-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: var(--dark-color);
+      }
+
+      .drawer-username {
+        font-weight: 600;
+      }
+
+      .drawer-plan {
+        font-size: 0.8rem;
+        opacity: 0.8;
+        margin-top: 0.2rem;
+      }
+
+      .drawer-menu {
+        list-style: none;
+        padding: 0 1rem;
+      }
+
+      .drawer-menu li {
+        margin-bottom: 0.5rem;
+      }
+
+      .drawer-menu a {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.8rem 1rem;
+        color: var(--white);
+        text-decoration: none;
+        border-radius: 8px;
+        transition: var(--transition);
+      }
+
+      .drawer-menu a:hover,
+      .drawer-menu a.active {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: var(--secondary-color);
+      }
+
+      .drawer-menu i {
+        font-size: 1.2rem;
+        width: 24px;
+        text-align: center;
+      }
+
+      /* Main Content Styles */
+      .main-content {
+        flex: 1;
+        margin-left: 0;
+        transition: var(--transition);
+        min-height: 100vh;
+      }
+
+      .main-content.shifted {
+        margin-left: 280px;
+      }
+
+      .top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+        background-color: var(--white);
+        box-shadow: var(--shadow);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .menu-toggle {
+        font-size: 1.5rem;
+        color: var(--primary-color);
+        cursor: pointer;
+        transition: var(--transition);
+      }
+
+      .menu-toggle:hover {
+        color: var(--accent-color);
+      }
+
+      .user-actions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .notification-btn,
+      .logout-btn {
+        font-size: 1.2rem;
+        color: var(--primary-color);
+        cursor: pointer;
+        transition: var(--transition);
+        position: relative;
+      }
+
+      .notification-btn:hover,
+      .logout-btn:hover {
+        color: var(--accent-color);
+      }
+
+      .notification-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background-color: #e53935;
+        color: white;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        font-size: 0.7rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .content-area {
+        padding: 2rem;
+      }
+
+      /* Balance Card */
+      .balance-card {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--accent-color)
+        );
+        color: var(--white);
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .balance-card::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 215, 0, 0.1) 0%,
+          transparent 70%
+        );
+        transform: rotate(30deg);
+        animation: shine 8s infinite linear;
+      }
+
+      @keyframes shine {
+        0% {
+          transform: rotate(30deg) translate(-10%, -10%);
+        }
+        100% {
+          transform: rotate(30deg) translate(10%, 10%);
+        }
+      }
+
+      .balance-title {
+        font-size: 1rem;
+        opacity: 0.9;
+        margin-bottom: 0.5rem;
+        position: relative;
+      }
+
+      .balance-amount {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        position: relative;
+      }
+
+      .balance-actions {
+        display: flex;
+        gap: 1rem;
+        position: relative;
+      }
+
+      .btn {
+        padding: 0.8rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .btn-primary {
+        background-color: var(--secondary-color);
+        color: var(--dark-color);
+        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+      }
+
+      .btn-outline {
+        background-color: transparent;
+        color: var(--white);
+        border: 2px solid var(--white);
+      }
+
+      .btn-outline:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+
+      /* Info Cards */
+      .info-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .info-card {
+        background-color: var(--white);
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: var(--shadow);
+      }
+
+      .info-card h3 {
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .info-card h3 i {
+        color: var(--accent-color);
+      }
+
+      .info-card p {
+        margin-bottom: 0.5rem;
+        line-height: 1.6;
+      }
+
+      .highlight {
+        color: var(--accent-color);
+        font-weight: 600;
+      }
+
+      /* Tasks Section */
+      .tasks-section {
+        background-color: var(--white);
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: var(--shadow);
+      }
+
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .section-title {
+        font-size: 1.5rem;
+        color: var(--primary-color);
+      }
+
+      .task-stats {
+        display: flex;
+        gap: 1.5rem;
+      }
+
+      .stat-item {
+        text-align: center;
+      }
+
+      .stat-value {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--accent-color);
+      }
+
+      .stat-label {
+        font-size: 0.9rem;
+        color: #777;
+      }
+
+      .task-notice {
+        background-color: var(--light-color);
+        padding: 1rem;
+        border-radius: 10px;
+        margin-bottom: 1.5rem;
+        border-left: 4px solid var(--secondary-color);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .task-notice p {
+        color: var(--dark-color);
+        font-weight: 500;
+      }
+
+      /* Modal Styles */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+        opacity: 0;
+        visibility: hidden;
+        transition: var(--transition);
+      }
+
+      .modal-overlay.active {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .modal {
+        background-color: var(--white);
+        border-radius: 15px;
+        width: 90%;
+        max-width: 500px;
+        box-shadow: var(--shadow);
+        transform: translateY(20px);
+        transition: var(--transition);
+      }
+
+      .modal-overlay.active .modal {
+        transform: translateY(0);
+      }
+
+      .modal-header {
+        padding: 1.5rem;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .modal-title {
+        font-size: 1.3rem;
+        color: var(--primary-color);
+        font-weight: 600;
+      }
+
+      .modal-close {
+        font-size: 1.5rem;
+        color: #777;
+        cursor: pointer;
+        transition: var(--transition);
+      }
+
+      .modal-close:hover {
+        color: var(--accent-color);
+      }
+
+      .modal-body {
+        padding: 1.5rem;
+      }
+
+      .modal-footer {
+        padding: 1rem 1.5rem;
+        border-top: 1px solid #eee;
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+      }
+
+      .input-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .input-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: var(--dark-color);
+      }
+
+      .input-group input,
+      .input-group select {
+        width: 100%;
+        padding: 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: var(--transition);
+      }
+
+      .input-group input:focus,
+      .input-group select:focus {
+        border-color: var(--accent-color);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(156, 39, 176, 0.2);
+      }
+
+      /* Toast Styles */
+      .toast {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #e53935;
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 5px;
+        box-shadow: var(--shadow);
+        z-index: 1000;
+        transform: translateX(200%);
+        transition: transform 0.3s ease;
+      }
+
+      .toast.show {
+        transform: translateX(0);
+      }
+
+      .toast.success {
+        background-color: #4caf50;
+      }
+
+      /* Responsive Styles */
+      @media (max-width: 992px) {
+        .drawer {
+          width: 250px;
+        }
+        .main-content.shifted {
+          margin-left: 250px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .balance-actions {
+          flex-direction: column;
+        }
+        .btn {
+          width: 100%;
+          justify-content: center;
+        }
+        .task-stats {
+          flex-wrap: wrap;
+          gap: 1rem;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .content-area {
+          padding: 1.5rem 1rem;
+        }
+        .balance-card {
+          padding: 1.5rem;
+        }
+        .balance-amount {
+          font-size: 2rem;
+        }
+        .info-section {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard-container">
+      <!-- Drawer Navigation -->
+      <aside class="drawer" id="drawer">
+        <div class="drawer-header">
+          <div class="drawer-logo">Carry Me <span>Along</span></div>
+          <div class="drawer-user">
+            <div class="drawer-avatar" id="user-avatar">U</div>
+            <div>
+              <div class="drawer-username" id="username">Username</div>
+              <div class="drawer-plan" id="user-plan">Plan: Not Activated</div>
+            </div>
+          </div>
+        </div>
+        <ul class="drawer-menu">
+          <li>
+            <a href="#" class="active">
+              <i class="fas fa-home"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" id="activate-btn">
+              <i class="fas fa-bolt"></i>
+              <span>Activate</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" id="bind-account-btn">
+              <i class="fas fa-university"></i>
+              <span>Bind Bank Account</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" id="withdraw-btn">
+              <i class="fas fa-money-bill-wave"></i>
+              <span>Withdraw</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" id="ads-tasks-btn">
+              <i class="fas fa-ad"></i>
+              <span>Ads Tasks</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <i class="fas fa-history"></i>
+              <span>Transaction History</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <i class="fas fa-cog"></i>
+              <span>Settings</span>
+            </a>
+          </li>
+        </ul>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content" id="main-content">
+        <div class="top-bar">
+          <div class="menu-toggle" id="menu-toggle">
+            <i class="fas fa-bars"></i>
+          </div>
+          <div class="user-actions">
+            <a href="info.html">
+              <div class="notification-btn">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge">3</span>
+              </div>
+            </a>
+            <div class="logout-btn">
+              <i class="fas fa-sign-out-alt"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-area">
+          <!-- Balance Card -->
+          <div class="balance-card">
+            <div class="balance-title">Available Balance</div>
+            <div class="balance-amount">
+              NGN <span id="user-balance">0.00</span>
+            </div>
+            <div class="balance-actions">
+              <button class="btn btn-primary">
+                <i class="fas fa-plus"></i> Fund Account
+              </button>
+              <button class="btn btn-outline" id="main-withdraw-btn">
+                <i class="fas fa-money-bill-wave"></i> Withdraw
+              </button>
+            </div>
+          </div>
+
+          <!-- Info Section -->
+          <div class="info-section">
+            <div class="info-card">
+              <h3><i class="fas fa-info-circle"></i> Withdrawal Info</h3>
+              <p>
+                <span class="highlight">Minimum withdrawal:</span> NGN 1,000
+              </p>
+              <p><span class="highlight">Withdrawal time:</span> 24/7</p>
+              <p>
+                <span class="highlight">Processing time:</span> Instant to 24
+                hours
+              </p>
+            </div>
+            <div class="info-card">
+              <h3><i class="fas fa-tasks"></i> Tasks Info</h3>
+              <p>
+                <span class="highlight">Daily tasks:</span>
+                <span id="daily-tasks">0</span>
+              </p>
+              <p>
+                <span class="highlight">Earnings per task:</span> NGN
+                <span id="task-earnings">0</span>
+              </p>
+              <p>
+                <span class="highlight">Total daily earnings:</span> NGN
+                <span id="daily-earnings">0</span>
+              </p>
+            </div>
+            <div class="info-card">
+              <h3><i class="fas fa-user-shield"></i> Account Status</h3>
+              <p>
+                <span class="highlight">Plan:</span>
+                <span id="account-plan">Not Activated</span>
+              </p>
+              <p>
+                <span class="highlight">Bank Account:</span>
+                <span id="bank-status">Not Bound</span>
+              </p>
+              <p>
+                <span class="highlight">Member Since:</span>
+                <span id="join-date">-</span>
+              </p>
+            </div>
+          </div>
+
+          <!-- Tasks Section -->
+          <div class="tasks-section">
+            <div class="section-header">
+              <h2 class="section-title">Available Tasks</h2>
+              <div class="task-stats">
+                <div class="stat-item">
+                  <div class="stat-value" id="available-tasks">0</div>
+                  <div class="stat-label">Available</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value" id="completed-tasks">0</div>
+                  <div class="stat-label">Completed</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="task-notice">
+              <p>
+                You are currently on
+                <span class="highlight" id="current-plan">Not Activated</span>
+                plan. Kindly activate your plan to start performing ads tasks.
+              </p>
+              <button class="btn btn-primary" id="activate-plan-btn">
+                <i class="fas fa-bolt"></i> Activate Now
+              </button>
+            </div>
+
+            <div id="tasks-container">
+              <!-- Tasks will be displayed here -->
+              <div style="text-align: center; padding: 2rem; color: #777">
+                <i
+                  class="fas fa-ad"
+                  style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5"
+                ></i>
+                <h3>No Tasks Available</h3>
+                <p>Activate your plan to unlock daily tasks</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Bank Account Modal -->
+    <div class="modal-overlay" id="bank-modal">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 class="modal-title">Bind Bank Account</h3>
+          <span class="modal-close" id="close-bank-modal">&times;</span>
+        </div>
+        <div class="modal-body">
+          <div class="input-group">
+            <label for="account-number">Account Number</label>
+            <input
+              type="text"
+              id="account-number"
+              placeholder="Enter your account number"
+              maxlength="10"
+            />
+          </div>
+          <div class="input-group">
+            <label for="account-name">Account Name</label>
+            <input
+              type="text"
+              id="account-name"
+              placeholder="Account name as registered with bank"
+              readonly
+            />
+          </div>
+          <div class="input-group">
+            <label for="bank-name">Bank Name</label>
+            <select id="bank-name">
+              <option value="">Select your bank</option>
+              <option value="Access Bank">Access Bank</option>
+              <option value="First Bank">First Bank</option>
+              <option value="GTBank">GTBank</option>
+              <option value="Opay">Opay</option>
+              <option value="Palmpay">Palmpay</option>
+              <option value="Zenith Bank">Zenith Bank</option>
+              <option value="UBA">UBA</option>
+              <option value="Stanbic IBTC">Stanbic IBTC</option>
+              <option value="Fidelity Bank">Fidelity Bank</option>
+              <option value="Union Bank">Union Bank</option>
+              <option value="Ecobank">Ecobank</option>
+              <option value="FCMB">FCMB</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" id="cancel-bank-btn">Cancel</button>
+          <button class="btn btn-primary" id="save-bank-btn">
+            Save Account
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Withdrawal Modal -->
+    <div class="modal-overlay" id="withdraw-modal">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 class="modal-title">Withdraw Funds</h3>
+          <span class="modal-close" id="close-withdraw-modal">&times;</span>
+        </div>
+        <div class="modal-body">
+          <div class="input-group">
+            <label for="withdraw-amount">Amount (NGN)</label>
+            <input
+              type="number"
+              id="withdraw-amount"
+              placeholder="Enter amount to withdraw"
+              min="1000"
+            />
+            <small style="color: #777; display: block; margin-top: 0.5rem">
+              Minimum withdrawal: NGN 1,000
+            </small>
+          </div>
+          <div class="input-group">
+            <label>Bank Details</label>
+            <div
+              style="
+                background-color: #f9f9f9;
+                padding: 1rem;
+                border-radius: 8px;
+              "
+            >
+              <p id="withdraw-bank-details">No bank account bound</p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" id="cancel-withdraw-btn">
+            Cancel
+          </button>
+          <button class="btn btn-primary" id="confirm-withdraw-btn">
+            Confirm Withdrawal
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Get user data from localStorage
+        const userData =
+          JSON.parse(localStorage.getItem("carryMeAlongUser")) || {};
+        const bankData =
+          JSON.parse(localStorage.getItem("carryMeAlongBank")) || {};
+
+        // DOM Elements
+        const drawer = document.getElementById("drawer");
+        const menuToggle = document.getElementById("menu-toggle");
+        const mainContent = document.getElementById("main-content");
+
+        // User Info Elements
+        const userAvatar = document.getElementById("user-avatar");
+        const usernameElement = document.getElementById("username");
+        const userPlanElement = document.getElementById("user-plan");
+        const userBalanceElement = document.getElementById("user-balance");
+        const accountPlanElement = document.getElementById("account-plan");
+        const currentPlanElement = document.getElementById("current-plan");
+        const bankStatusElement = document.getElementById("bank-status");
+        const joinDateElement = document.getElementById("join-date");
+
+        // Task Info Elements
+        const dailyTasksElement = document.getElementById("daily-tasks");
+        const taskEarningsElement = document.getElementById("task-earnings");
+        const dailyEarningsElement = document.getElementById("daily-earnings");
+        const availableTasksElement =
+          document.getElementById("available-tasks");
+        const completedTasksElement =
+          document.getElementById("completed-tasks");
+
+        // Buttons
+        const activateBtn = document.getElementById("activate-btn");
+        const bindAccountBtn = document.getElementById("bind-account-btn");
+        const withdrawBtn = document.getElementById("withdraw-btn");
+        const adsTasksBtn = document.getElementById("ads-tasks-btn");
+        const mainWithdrawBtn = document.getElementById("main-withdraw-btn");
+        const activatePlanBtn = document.getElementById("activate-plan-btn");
+
+        // Modals
+        const bankModal = document.getElementById("bank-modal");
+        const closeBankModal = document.getElementById("close-bank-modal");
+        const cancelBankBtn = document.getElementById("cancel-bank-btn");
+        const saveBankBtn = document.getElementById("save-bank-btn");
+
+        const withdrawModal = document.getElementById("withdraw-modal");
+        const closeWithdrawModal = document.getElementById(
+          "close-withdraw-modal"
+        );
+        const cancelWithdrawBtn = document.getElementById(
+          "cancel-withdraw-btn"
+        );
+        const confirmWithdrawBtn = document.getElementById(
+          "confirm-withdraw-btn"
+        );
+        const withdrawAmountInput = document.getElementById("withdraw-amount");
+        const withdrawBankDetails = document.getElementById(
+          "withdraw-bank-details"
+        );
+
+        // Toast
+        const toast = document.getElementById("toast");
+
+        // Bank Form Elements
+        const accountNumberInput = document.getElementById("account-number");
+        const accountNameInput = document.getElementById("account-name");
+        const bankNameSelect = document.getElementById("bank-name");
+
+        // Initialize user data
+        function initUserData() {
+          if (userData.username) {
+            // Set user info
+            usernameElement.textContent = userData.username;
+            userAvatar.textContent = userData.username.charAt(0).toUpperCase();
+
+            // Set plan info
+            const plan = userData.plan || "Not Activated";
+            userPlanElement.textContent = `Plan: ${plan}`;
+            accountPlanElement.textContent = plan;
+            currentPlanElement.textContent = plan;
+
+            // Set balance
+            const balance = userData.balance || 0;
+            userBalanceElement.textContent = balance.toLocaleString("en-NG");
+
+            // Set bank status
+            if (bankData.accountNumber) {
+              bankStatusElement.textContent = "Bound";
+              withdrawBankDetails.textContent = `${bankData.accountName} | ${bankData.accountNumber} | ${bankData.bankName}`;
+            } else {
+              bankStatusElement.textContent = "Not Bound";
+              withdrawBankDetails.textContent = "No bank account bound";
+            }
+
+            // Set join date
+            if (userData.joinedDate) {
+              const joinDate = new Date(userData.joinedDate);
+              joinDateElement.textContent = joinDate.toLocaleDateString();
+            }
+
+            // Set task info based on plan
+            if (plan === "premium") {
+              dailyTasksElement.textContent = "8";
+              taskEarningsElement.textContent = "1,000";
+              dailyEarningsElement.textContent = "8,000";
+              availableTasksElement.textContent = "8";
+            } else if (plan === "vip") {
+              dailyTasksElement.textContent = "15";
+              taskEarningsElement.textContent = "1,500";
+              dailyEarningsElement.textContent = "22,500";
+              availableTasksElement.textContent = "15";
+            } else {
+              dailyTasksElement.textContent = "0";
+              taskEarningsElement.textContent = "0";
+              dailyEarningsElement.textContent = "0";
+              availableTasksElement.textContent = "0";
+            }
+          }
+        }
+
+        // Toggle drawer
+        menuToggle.addEventListener("click", function () {
+          drawer.classList.toggle("open");
+          mainContent.classList.toggle("shifted");
+        });
+
+        // Activate button - redirect to activate.html
+        activateBtn.addEventListener("click", function (e) {
+          e.preventDefault();
+          window.location.href = "activate.html";
+        });
+
+        activatePlanBtn.addEventListener("click", function () {
+          window.location.href = "activate.html";
+        });
+
+        // Bind account button - show modal
+        bindAccountBtn.addEventListener("click", function (e) {
+          e.preventDefault();
+          bankModal.classList.add("active");
+
+          // Pre-fill form if bank data exists
+          if (bankData.accountNumber) {
+            accountNumberInput.value = bankData.accountNumber;
+            accountNameInput.value = bankData.accountName;
+            bankNameSelect.value = bankData.bankName;
+          } else {
+            accountNumberInput.value = "";
+            accountNameInput.value = "";
+            bankNameSelect.value = "";
+          }
+        });
+
+        // Close bank modal
+        function closeBankModalFunc() {
+          bankModal.classList.remove("active");
+        }
+
+        closeBankModal.addEventListener("click", closeBankModalFunc);
+        cancelBankBtn.addEventListener("click", closeBankModalFunc);
+
+        // Save bank account
+        saveBankBtn.addEventListener("click", function () {
+          const accountNumber = accountNumberInput.value.trim();
+          const accountName = accountNameInput.value.trim();
+          const bankName = bankNameSelect.value;
+
+          if (!accountNumber) {
+            showToast("Please enter account number", "error");
+            return;
+          }
+
+          if (!/^\d{10}$/.test(accountNumber)) {
+            showToast("Account number must be 10 digits", "error");
+            return;
+          }
+
+          if (!bankName) {
+            showToast("Please select your bank", "error");
+            return;
+          }
+
+          // In a real app, you would verify the account number with the bank API
+          // For demo purposes, we'll just use the account number as the name
+          if (!accountName) {
+            accountNameInput.value = userData.username || "Account Holder";
+          }
+
+          // Save bank data
+          const bankInfo = {
+            accountNumber,
+            accountName: accountNameInput.value,
+            bankName,
+          };
+
+          localStorage.setItem("carryMeAlongBank", JSON.stringify(bankInfo));
+
+          // Update UI
+          bankStatusElement.textContent = "Bound";
+          withdrawBankDetails.textContent = `${accountNameInput.value} | ${accountNumber} | ${bankName}`;
+
+          showToast("Bank account saved successfully", "success");
+          closeBankModalFunc();
+        });
+
+        // Account number validation (simulate account name lookup)
+        accountNumberInput.addEventListener("input", function () {
+          if (this.value.length === 10) {
+            // In a real app, you would call a bank API to verify the account number
+            // For demo, we'll just set the account name to the username
+            accountNameInput.value = userData.username || "Account Holder";
+          } else if (this.value.length < 10) {
+            accountNameInput.value = "";
+          }
+        });
+
+        // Withdraw button - show modal or toast
+        withdrawBtn.addEventListener("click", function (e) {
+          e.preventDefault();
+          handleWithdrawClick();
+        });
+
+        mainWithdrawBtn.addEventListener("click", handleWithdrawClick);
+
+        function handleWithdrawClick() {
+          if (!bankData.accountNumber) {
+            showToast("Please bind your bank account first", "error");
+            bankModal.classList.add("active");
+            return;
+          }
+
+          withdrawModal.classList.add("active");
+          withdrawAmountInput.value = "";
+        }
+
+        // Close withdraw modal
+        function closeWithdrawModalFunc() {
+          withdrawModal.classList.remove("active");
+        }
+
+        closeWithdrawModal.addEventListener("click", closeWithdrawModalFunc);
+        cancelWithdrawBtn.addEventListener("click", closeWithdrawModalFunc);
+
+        // Confirm withdrawal
+        confirmWithdrawBtn.addEventListener("click", function () {
+          const amount = parseFloat(withdrawAmountInput.value);
+          const balance = parseFloat(userData.balance) || 0;
+
+          if (!amount || amount < 1000) {
+            showToast("Minimum withdrawal is NGN 1,000", "error");
+            return;
+          }
+
+          if (amount > balance) {
+            showToast("Insufficient balance", "error");
+            return;
+          }
+
+          // Process withdrawal (in a real app, this would be an API call)
+          userData.balance = balance - amount;
+          localStorage.setItem("carryMeAlongUser", JSON.stringify(userData));
+
+          // Update balance display
+          userBalanceElement.textContent =
+            userData.balance.toLocaleString("en-NG");
+
+          showToast(
+            `Withdrawal request of NGN ${amount.toLocaleString()} submitted`,
+            "success"
+          );
+          closeWithdrawModalFunc();
+        });
+
+        // Ads tasks button
+        adsTasksBtn.addEventListener("click", function (e) {
+          e.preventDefault();
+          if (!userData.plan) {
+            showToast("You haven't activated your plan", "error");
+          } else {
+            // In a real app, this would show the ads tasks
+            showToast("Redirecting to ads tasks...", "success");
+          }
+        });
+
+        // Show toast notification
+        function showToast(message, type = "error") {
+          toast.textContent = message;
+          toast.className = "toast";
+          toast.classList.add(type === "error" ? "show" : "show success");
+
+          setTimeout(() => {
+            toast.classList.remove("show");
+          }, 3000);
+        }
+
+        // Initialize the page
+        initUserData();
+      });
+    </script>
+  </body>
+</html>

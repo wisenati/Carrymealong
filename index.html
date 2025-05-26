@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Carry Me Along - Join Our Community</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary-color: #6a0dad;
+        --secondary-color: #ffd700;
+        --accent-color: #9c27b0;
+        --light-color: #f3e5f5;
+        --dark-color: #4a148c;
+        --text-color: #333;
+        --white: #ffffff;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--dark-color)
+        );
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: var(--text-color);
+        overflow-x: hidden;
+      }
+
+      .container {
+        width: 90%;
+        max-width: 1200px;
+        margin: 2rem auto;
+        background-color: var(--white);
+        border-radius: 20px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        position: relative;
+        animation: fadeIn 0.8s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .whatsapp-float {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background-color: #25d366;
+        color: white;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 30px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        z-index: 100;
+        cursor: pointer;
+        transition: var(--transition);
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .whatsapp-float:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .header {
+        background: linear-gradient(
+          to right,
+          var(--primary-color),
+          var(--accent-color)
+        );
+        color: var(--white);
+        padding: 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .header::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+          circle,
+          rgba(255, 215, 0, 0.1) 0%,
+          transparent 70%
+        );
+        transform: rotate(30deg);
+        animation: shine 8s infinite linear;
+      }
+
+      @keyframes shine {
+        0% {
+          transform: rotate(30deg) translate(-10%, -10%);
+        }
+        100% {
+          transform: rotate(30deg) translate(10%, 10%);
+        }
+      }
+
+      .logo {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        position: relative;
+        z-index: 1;
+      }
+
+      .logo span {
+        color: var(--secondary-color);
+      }
+
+      .slogan {
+        font-size: 1rem;
+        opacity: 0.9;
+        position: relative;
+        z-index: 1;
+      }
+
+      .tabs {
+        display: flex;
+        background-color: var(--light-color);
+        position: relative;
+      }
+
+      .tab {
+        flex: 1;
+        text-align: center;
+        padding: 1.2rem;
+        cursor: pointer;
+        font-weight: 600;
+        color: var(--dark-color);
+        transition: var(--transition);
+        position: relative;
+        z-index: 1;
+      }
+
+      .tab.active {
+        color: var(--primary-color);
+      }
+
+      .indicator {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 4px;
+        background: linear-gradient(
+          to right,
+          var(--secondary-color),
+          var(--accent-color)
+        );
+        transition: var(--transition);
+        z-index: 2;
+      }
+
+      .form-container {
+        padding: 2.5rem;
+        position: relative;
+      }
+
+      .form {
+        display: none;
+        animation: slideUp 0.5s ease;
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .form.active {
+        display: block;
+      }
+
+      .form-title {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        color: var(--primary-color);
+        text-align: center;
+        position: relative;
+      }
+
+      .form-title::after {
+        content: "";
+        display: block;
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(
+          to right,
+          var(--secondary-color),
+          var(--accent-color)
+        );
+        margin: 0.5rem auto;
+        border-radius: 2px;
+      }
+
+      .input-group {
+        margin-bottom: 1.5rem;
+        position: relative;
+      }
+
+      .input-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: var(--dark-color);
+      }
+
+      .input-group input,
+      .input-group select {
+        width: 100%;
+        padding: 1rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: var(--transition);
+      }
+
+      .input-group input:focus,
+      .input-group select:focus {
+        border-color: var(--accent-color);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(156, 39, 176, 0.2);
+      }
+
+      .input-group i {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--accent-color);
+      }
+
+      .btn {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(
+          to right,
+          var(--primary-color),
+          var(--accent-color)
+        );
+        color: var(--white);
+        border: none;
+        border-radius: 10px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        margin-top: 1rem;
+        box-shadow: 0 4px 15px rgba(106, 13, 173, 0.3);
+      }
+
+      .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(106, 13, 173, 0.4);
+      }
+
+      .btn:active {
+        transform: translateY(0);
+      }
+
+      .balance-notice {
+        background-color: var(--light-color);
+        padding: 1rem;
+        border-radius: 10px;
+        margin: 1.5rem 0;
+        text-align: center;
+        font-weight: 500;
+        color: var(--dark-color);
+        border-left: 4px solid var(--secondary-color);
+      }
+
+      .balance-notice span {
+        color: var(--accent-color);
+        font-weight: 700;
+      }
+
+      .plan-benefits {
+        margin: 2rem 0;
+        background-color: var(--light-color);
+        padding: 1.5rem;
+        border-radius: 15px;
+        border: 1px solid rgba(156, 39, 176, 0.2);
+      }
+
+      .plan-benefits h3 {
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        text-align: center;
+      }
+
+      .benefit-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+
+      .benefit-item {
+        flex: 1 1 200px;
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.5rem;
+      }
+
+      .benefit-item i {
+        color: var(--secondary-color);
+        margin-right: 0.5rem;
+        font-size: 1.2rem;
+      }
+
+      .footer {
+        text-align: center;
+        margin-top: 2rem;
+        color: #777;
+        font-size: 0.9rem;
+      }
+
+      .error-message {
+        color: #e53935;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+        display: none;
+      }
+
+      .success-message {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #4caf50;
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 5px;
+        box-shadow: var(--shadow);
+        z-index: 1000;
+        transform: translateX(200%);
+        transition: transform 0.3s ease;
+      }
+
+      .success-message.show {
+        transform: translateX(0);
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          width: 95%;
+          margin: 1rem auto;
+        }
+
+        .header {
+          padding: 1.5rem;
+        }
+
+        .logo {
+          font-size: 2rem;
+        }
+
+        .form-container {
+          padding: 1.5rem;
+        }
+
+        .benefit-list {
+          flex-direction: column;
+        }
+
+        .whatsapp-float {
+          width: 50px;
+          height: 50px;
+          font-size: 25px;
+          bottom: 20px;
+          right: 20px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .header {
+          padding: 1rem;
+        }
+
+        .logo {
+          font-size: 1.8rem;
+        }
+
+        .form-container {
+          padding: 1rem;
+        }
+
+        .tab {
+          padding: 1rem 0.5rem;
+          font-size: 0.9rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <div class="logo">Carry Me <span>Along</span></div>
+        <div class="slogan">Your Destiny Helper</div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active" data-tab="login">Login</div>
+        <div class="tab" data-tab="register">Register</div>
+        <div class="indicator"></div>
+      </div>
+
+      <div class="form-container">
+        <!-- Login Form -->
+        <div class="form active" id="login-form">
+          <h2 class="form-title">Welcome Back</h2>
+          <div class="input-group">
+            <label for="login-username">Username</label>
+            <input
+              type="text"
+              id="login-username"
+              placeholder="Enter your username"
+            />
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="input-group">
+            <label for="login-password">Password</label>
+            <input
+              type="password"
+              id="login-password"
+              placeholder="Enter your password"
+            />
+            <i class="fas fa-lock"></i>
+          </div>
+          <div class="error-message" id="login-error"></div>
+          <button class="btn" id="login-btn">Login</button>
+          <p class="footer">
+            Don't have an account?
+            <span class="switch-tab" data-tab="register">Register here</span>
+          </p>
+        </div>
+
+        <!-- Registration Form -->
+        <div class="form" id="register-form">
+          <h2 class="form-title">Create Account</h2>
+          <div class="input-group">
+            <label for="register-username">Username</label>
+            <input
+              type="text"
+              id="register-username"
+              placeholder="Choose a username"
+            />
+            <i class="fas fa-user"></i>
+            <div class="error-message" id="username-error"></div>
+          </div>
+          <div class="input-group">
+            <label for="register-phone">Phone Number</label>
+            <input
+              type="tel"
+              id="register-phone"
+              placeholder="Enter your phone number"
+            />
+            <i class="fas fa-phone"></i>
+            <div class="error-message" id="phone-error"></div>
+          </div>
+          <div class="input-group">
+            <label for="register-password">Password</label>
+            <input
+              type="password"
+              id="register-password"
+              placeholder="Create a password"
+            />
+            <i class="fas fa-lock"></i>
+            <div class="error-message" id="password-error"></div>
+          </div>
+          <div class="input-group">
+            <label for="register-confirm-password">Confirm Password</label>
+            <input
+              type="password"
+              id="register-confirm-password"
+              placeholder="Confirm your password"
+            />
+            <i class="fas fa-lock"></i>
+            <div class="error-message" id="confirm-password-error"></div>
+          </div>
+          <div class="input-group">
+            <label for="register-plan">Select Plan</label>
+            <select id="register-plan">
+              <option value="">-- Select a plan --</option>
+              <option value="premium">Premium Plan</option>
+              <option value="vip">VIP Plan</option>
+            </select>
+            <div class="error-message" id="plan-error"></div>
+          </div>
+          <div class="balance-notice">
+            All new users will receive a bonus <span>NGN 500</span>
+          </div>
+
+          <!-- <div class="plan-benefits">
+            <h3>Plan Benefits</h3>
+            <div class="benefit-list">
+              <div class="benefit-item">
+                <i class="fas fa-check-circle"></i>
+                <span>Daily investment returns</span>
+              </div>
+              <div class="benefit-item">
+                <i class="fas fa-check-circle"></i>
+                <span>24/7 customer support</span>
+              </div>
+              <div class="benefit-item">
+                <i class="fas fa-check-circle"></i>
+                <span>Secure transactions</span>
+              </div>
+              <div class="benefit-item">
+                <i class="fas fa-check-circle"></i>
+                <span>Withdrawal flexibility</span>
+              </div>
+            </div>
+          </div> -->
+
+          <button class="btn" id="register-btn">Create Account</button>
+          <p class="footer">
+            Already have an account?
+            <span class="switch-tab" data-tab="login">Login here</span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="whatsapp-float" id="whatsapp-btn">
+      <i class="fab fa-whatsapp"></i>
+    </div>
+
+    <div class="success-message" id="success-message"></div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Tab switching functionality
+        const tabs = document.querySelectorAll(".tab");
+        const forms = document.querySelectorAll(".form");
+        const indicator = document.querySelector(".indicator");
+        const tabContents = document.querySelectorAll(".tab");
+
+        // Set initial indicator position
+        const activeTab = document.querySelector(".tab.active");
+        indicator.style.width = `${activeTab.offsetWidth}px`;
+        indicator.style.left = `${activeTab.offsetLeft}px`;
+
+        tabs.forEach((tab) => {
+          tab.addEventListener("click", function () {
+            const tabId = this.getAttribute("data-tab");
+
+            // Update active tab
+            tabs.forEach((t) => t.classList.remove("active"));
+            this.classList.add("active");
+
+            // Update indicator position
+            indicator.style.width = `${this.offsetWidth}px`;
+            indicator.style.left = `${this.offsetLeft}px`;
+
+            // Show corresponding form
+            forms.forEach((form) => {
+              form.classList.remove("active");
+              if (form.id === `${tabId}-form`) {
+                form.classList.add("active");
+              }
+            });
+          });
+        });
+
+        // Switch tab from links
+        document.querySelectorAll(".switch-tab").forEach((link) => {
+          link.addEventListener("click", function () {
+            const tabId = this.getAttribute("data-tab");
+            document.querySelector(`.tab[data-tab="${tabId}"]`).click();
+          });
+        });
+
+        // WhatsApp button
+        document
+          .getElementById("whatsapp-btn")
+          .addEventListener("click", function () {
+            window.open("https://wa.me/2349159307408", "_blank");
+          });
+
+        // Registration form validation and submission
+        const registerBtn = document.getElementById("register-btn");
+        registerBtn.addEventListener("click", function () {
+          // Reset error messages
+          document.querySelectorAll(".error-message").forEach((el) => {
+            el.style.display = "none";
+          });
+
+          // Get form values
+          const username = document
+            .getElementById("register-username")
+            .value.trim();
+          const phone = document.getElementById("register-phone").value.trim();
+          const password = document.getElementById("register-password").value;
+          const confirmPassword = document.getElementById(
+            "register-confirm-password"
+          ).value;
+          const plan = document.getElementById("register-plan").value;
+
+          // Validate inputs
+          let isValid = true;
+
+          if (!username) {
+            document.getElementById("username-error").textContent =
+              "Username is required";
+            document.getElementById("username-error").style.display = "block";
+            isValid = false;
+          }
+
+          if (!phone) {
+            document.getElementById("phone-error").textContent =
+              "Phone number is required";
+            document.getElementById("phone-error").style.display = "block";
+            isValid = false;
+          } else if (!/^\d{11}$/.test(phone)) {
+            document.getElementById("phone-error").textContent =
+              "Please enter a valid 11-digit phone number";
+            document.getElementById("phone-error").style.display = "block";
+            isValid = false;
+          }
+
+          if (!password) {
+            document.getElementById("password-error").textContent =
+              "Password is required";
+            document.getElementById("password-error").style.display = "block";
+            isValid = false;
+          } else if (password.length < 6) {
+            document.getElementById("password-error").textContent =
+              "Password must be at least 6 characters";
+            document.getElementById("password-error").style.display = "block";
+            isValid = false;
+          }
+
+          if (password !== confirmPassword) {
+            document.getElementById("confirm-password-error").textContent =
+              "Passwords do not match";
+            document.getElementById("confirm-password-error").style.display =
+              "block";
+            isValid = false;
+          }
+
+          if (!plan) {
+            document.getElementById("plan-error").textContent =
+              "Please select a plan";
+            document.getElementById("plan-error").style.display = "block";
+            isValid = false;
+          }
+
+          if (isValid) {
+            // Clear any existing user data in localStorage
+            localStorage.clear();
+
+            // Create user object
+            const user = {
+              username,
+              phone,
+              password,
+              plan,
+              balance: 500,
+              joinedDate: new Date().toISOString(),
+            };
+
+            // Save to localStorage
+            localStorage.setItem("carryMeAlongUser", JSON.stringify(user));
+
+            // Show success message
+            const successMessage = document.getElementById("success-message");
+            successMessage.textContent =
+              "Registration successful! Redirecting to login...";
+            successMessage.classList.add("show");
+
+            // Switch to login tab after delay
+            setTimeout(() => {
+              successMessage.classList.remove("show");
+              document.querySelector('.tab[data-tab="login"]').click();
+            }, 3000);
+          }
+        });
+
+        // Login form functionality
+        const loginBtn = document.getElementById("login-btn");
+        loginBtn.addEventListener("click", function () {
+          const username = document
+            .getElementById("login-username")
+            .value.trim();
+          const password = document.getElementById("login-password").value;
+          const errorElement = document.getElementById("login-error");
+
+          // Get user from localStorage
+          const userData = localStorage.getItem("carryMeAlongUser");
+
+          if (!userData) {
+            errorElement.textContent =
+              "No account found. Please register first.";
+            errorElement.style.display = "block";
+            return;
+          }
+
+          const user = JSON.parse(userData);
+
+          if (user.username !== username || user.password !== password) {
+            errorElement.textContent = "Invalid username or password";
+            errorElement.style.display = "block";
+          } else {
+            // Successful login - in a real app, you would redirect to dashboard
+            const successMessage = document.getElementById("success-message");
+            successMessage.textContent = `Welcome back, ${user.username}!`;
+            successMessage.classList.add("show");
+
+            setTimeout(() => {
+              successMessage.classList.remove("show");
+              // Here you would typically redirect to the user dashboard
+              window.location.href = "dashboard.html";
+            }, 3000);
+          }
+        });
+
+        // Animation for input focus
+        document.querySelectorAll("input, select").forEach((input) => {
+          input.addEventListener("focus", function () {
+            this.parentElement.querySelector("label").style.color =
+              "var(--accent-color)";
+          });
+
+          input.addEventListener("blur", function () {
+            this.parentElement.querySelector("label").style.color =
+              "var(--dark-color)";
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
